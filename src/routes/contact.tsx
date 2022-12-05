@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, useLoaderData } from "react-router-dom";
+import { Form, redirect, useLoaderData } from "react-router-dom";
 import { getContact } from "../contacts";
 import { Contact } from "../models/ContactModel";
 

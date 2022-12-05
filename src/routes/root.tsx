@@ -1,10 +1,19 @@
 import React from "react";
-import { Link, Outlet, useLoaderData, Form, redirect } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  Form,
+  redirect,
+  NavLink,
+  useNavigation,
+} from "react-router-dom";
 import { getContacts, createContact } from "../contacts";
 import { Contact } from "../models/ContactModel";
 
 const RootPage = () => {
   const { contacts } = useLoaderData() as any;
+  const navigation = useNavigation();
 
   console.log(contacts);
 
@@ -27,7 +36,12 @@ const RootPage = () => {
             <ul>
               {contacts.map((contact: any) => (
                 <li key={contact.id}>
-                  <Link to={`contacts/${contact.id}`}>
+                  <NavLink
+                    to={`contacts/${contact.id}`}
+                    className={({ isActive, isPending }) =>
+                      isActive ? "active" : isPending ? "pending" : ""
+                    }
+                  >
                     {contact.first || contact.last ? (
                       <>
                         {contact.first} {contact.last}
@@ -36,7 +50,7 @@ const RootPage = () => {
                       <i>No Name</i>
                     )}{" "}
                     {contact.favorite && <span>★</span>}
-                  </Link>
+                  </NavLink>
                 </li>
               ))}
             </ul>
@@ -47,7 +61,10 @@ const RootPage = () => {
           )}
         </nav>
       </div>
-      <div id="detail">
+      <div
+        id="detail"
+        className={navigation.state === "loading" ? "loading" : ""}
+      >
         <Outlet />
       </div>
     </>
