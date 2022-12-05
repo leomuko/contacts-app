@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet, useLoaderData, Form } from "react-router-dom";
+import { Link, Outlet, useLoaderData, Form, redirect } from "react-router-dom";
 import { getContacts, createContact } from "../contacts";
 import { Contact } from "../models/ContactModel";
 
@@ -61,6 +61,7 @@ export async function loader() {
   return { contacts };
 }
 
-export async function action(): Promise<void> {
-  await createContact();
+export async function action() {
+  const contact = await createContact();
+  return redirect(`/contacts/${contact.id}/edit`);
 }

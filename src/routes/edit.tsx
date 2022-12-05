@@ -34,6 +34,15 @@ const EditComponent = () => {
         />
       </label>
       <label>
+        <span>Avatar URL</span>
+        <input
+          type="text"
+          name="avatar"
+          placeholder="https://example.com/avata/jpg"
+          defaultValue={contact.avatar}
+        />
+      </label>
+      <label>
         <span>Notes</span>
         <textarea name="notes" defaultValue={contact.notes} rows={6} />
       </label>
