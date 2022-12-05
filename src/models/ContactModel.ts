@@ -1,4 +1,5 @@
 export interface Contact {
+  id: number;
   first?: string;
   last?: string;
   avatar?: string;
