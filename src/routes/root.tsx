@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Link,
   Outlet,
@@ -7,15 +7,27 @@ import {
   redirect,
   NavLink,
   useNavigation,
+  useSubmit,
 } from "react-router-dom";
 import { getContacts, createContact } from "../contacts";
 import { Contact } from "../models/ContactModel";
 
 const RootPage = () => {
-  const { contacts } = useLoaderData() as any;
+  const { contacts, q } = useLoaderData() as any;
   const navigation = useNavigation();
+  const submit = useSubmit();
 
-  console.log(contacts);
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has("q");
+
+  //console.log(contacts);
+  useEffect(() => {
+    const searchElement = document.getElementById("q");
+    if (searchElement != null && searchElement instanceof HTMLInputElement) {
+      searchElement.value = q;
+    }
+  }, [q]);
 
   return (
     <>
@@ -23,8 +35,21 @@ const RootPage = () => {
         <h1>React Router Contacts</h1>
         <div>
           <Form id="search-form" role="search">
-            <input type="search" id="q" aria-label="Search Contacts" name="q" />
-            <div id="search-spinner" aria-hidden hidden={true} />
+            <input
+              type="search"
+              id="q"
+              aria-label="Search Contacts"
+              name="q"
+              defaultValue={q}
+              onChange={(event) => {
+                const isFirstSearch = q == null;
+                submit(event.currentTarget.form, {
+                  replace: !isFirstSearch,
+                });
+              }}
+              className={searching ? "loading" : ""}
+            />
+            <div id="search-spinner" aria-hidden hidden={!searching} />
             <div className="sr-only" aria-live="polite"></div>
           </Form>
           <Form method="post">
@@ -77,7 +102,7 @@ export async function loader({ request }: any) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   const contacts: Contact[] = await getContacts(q);
-  return { contacts };
+  return { contacts, q };
 }
 
 export async function action() {
