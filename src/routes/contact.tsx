@@ -1,6 +1,6 @@
 import React from "react";
-import { Form, redirect, useLoaderData } from "react-router-dom";
-import { getContact } from "../contacts";
+import { Form, redirect, useFetcher, useLoaderData } from "react-router-dom";
+import { getContact, updateContact } from "../contacts";
 import { Contact } from "../models/ContactModel";
 
 const ContactComponent = () => {
@@ -66,10 +66,15 @@ const ContactComponent = () => {
 };
 
 function Favorite({ contact }: { contact: Contact }): JSX.Element {
+  const fetcher = useFetcher();
   let favorite: boolean = contact.favorite;
 
+  if (fetcher.formData) {
+    favorite = fetcher.formData.get("favorite") === "true";
+  }
+
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <button
         name="favorite"
         value={favorite ? "true" : "false"}
@@ -77,7 +82,7 @@ function Favorite({ contact }: { contact: Contact }): JSX.Element {
       >
         {favorite ? "★" : "☆"}
       </button>
-    </Form>
+    </fetcher.Form>
   );
 }
 
@@ -87,4 +92,12 @@ export async function loader({ params }: any) {
   // const contact = await getContact(params.contactId);
   // return { contact };
   return getContact(params.contactId);
+}
+
+export async function action({ request, params }: any) {
+  console.log("Clicked Form");
+  let formData = await request.formData();
+  return updateContact(params.contactId, {
+    favorite: formData.get("favorite") === "true",
+  });
 }
