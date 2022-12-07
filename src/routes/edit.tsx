@@ -1,10 +1,11 @@
 import React from "react";
-import { Form, useLoaderData, redirect } from "react-router-dom";
+import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { Contact } from "../models/ContactModel";
 import { updateContact } from "../contacts";
 
 const EditComponent = () => {
   const contact = useLoaderData() as Contact;
+  const navigate = useNavigate();
   return (
     <Form method="post" id="contact-form">
       <p>
@@ -48,7 +49,14 @@ const EditComponent = () => {
       </label>
       <p>
         <button type="submit">Save</button>
-        <button type="button">Cancel</button>
+        <button
+          type="button"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Cancel
+        </button>
       </p>
     </Form>
   );
